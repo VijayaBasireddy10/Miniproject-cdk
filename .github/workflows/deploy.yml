@@ -6,39 +6,56 @@ on:
       - main
   workflow_dispatch:
     inputs:
-      stage:
-        description: 'Deployment stage'
+      confirm:
+        description: 'Deploy to QA? Type "qa" to confirm'
         required: true
         default: 'qa'
         type: choice
         options:
           - qa
 
+run-name: >-
+  ${{ github.event_name == 'workflow_dispatch' && 'Manual QA Deployment' || 'Auto Dev Deployment' }}
+
 jobs:
-  deploy:
+  deploy-dev:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     env:
-      STAGE: ${{ github.event_name == 'workflow_dispatch' && inputs.stage || 'dev' }}
+      STAGE: dev
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install dependencies
-        run: npm install
+      - run: npm install
+      - run: npm install -g aws-cdk
+      - run: STAGE=$STAGE npx cdk synth
 
-      - name: Install CDK CLI
-        run: npm install -g aws-cdk
-
-      - name: CDK Synth
-        run: STAGE=$STAGE npx cdk synth
-
-      - name: Upload template artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
-          name: cdk-template-${{ env.STAGE }}
+          name: cdk-template-dev
+          path: cdk.out/
+
+  deploy-qa:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    env:
+      STAGE: qa
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+      - run: npm install -g aws-cdk
+      - run: STAGE=$STAGE npx cdk synth
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cdk-template-qa
           path: cdk.out/
