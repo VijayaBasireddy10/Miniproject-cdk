@@ -1,20 +1,39 @@
 #!/usr/bin/env node
-import * as cdk from 'aws-cdk-lib/core';
-import { MiniprojectCdkStack } from '../lib/miniproject-cdk-stack';
+
+const stage = process.env.STAGE || 'default';
+process.env.NODE_CONFIG_ENV = stage;
+
+import * as cdk from 'aws-cdk-lib';
+import type { Config } from 'config';
+
+const config: Config = require('config');
+
+import { StackOne, StackTwo } from '../lib/miniproject-cdk-stack';
 
 const app = new cdk.App();
-new MiniprojectCdkStack(app, 'MiniprojectCdkStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+console.log('========================================');
+console.log(`Stage: ${stage}`);
+console.log(`Project: ${config.get<string>('project')}`);
+console.log(`Region: ${config.get<string>('region')}`);
+console.log(`API Timeout: ${config.get<number>('api.timeout')}`);
+console.log('========================================');
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+const projectName = config.get<string>('project');
+const region = config.get<string>('region');
+const apiTimeout = config.get<number>('api.timeout');
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+const stackOne = new StackOne(app, 'StackOne', {
+  description: 'Stack one',
+  env: { region },
+  projectName,
 });
+
+const stackTwo = new StackTwo(app, 'StackTwo', {
+  description: 'Stack two',
+  env: { region },
+  projectName,
+  apiTimeout,
+});
+
+stackTwo.addDependency(stackOne);

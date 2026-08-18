@@ -1,0 +1,7 @@
+{
+  "project": "miniproject-cdk",
+  "region": "us-east-1",
+  "api": {
+    "timeout": 30
+  }
+}
