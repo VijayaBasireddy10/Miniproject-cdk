@@ -1,0 +1,29 @@
+name: Deploy Dev
+
+on:
+  push:
+    branches:
+      - main
+
+run-name: Auto Dev Deployment
+
+jobs:
+  deploy-dev:
+    runs-on: ubuntu-latest
+    env:
+      STAGE: dev
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+      - run: npm install -g aws-cdk
+      - run: STAGE=$STAGE npx cdk synth
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cdk-template-dev
+          path: cdk.out/

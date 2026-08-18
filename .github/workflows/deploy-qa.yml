@@ -1,0 +1,35 @@
+name: Deploy QA
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Deploy to QA? Type "qa" to confirm'
+        required: true
+        default: 'qa'
+        type: choice
+        options:
+          - qa
+
+run-name: Manual QA Deployment
+
+jobs:
+  deploy-qa:
+    runs-on: ubuntu-latest
+    env:
+      STAGE: qa
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - run: npm install
+      - run: npm install -g aws-cdk
+      - run: STAGE=$STAGE npx cdk synth
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: cdk-template-qa
+          path: cdk.out/
