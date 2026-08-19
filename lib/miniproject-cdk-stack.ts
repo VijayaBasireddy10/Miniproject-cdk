@@ -14,7 +14,7 @@ export class StackOne extends cdk.Stack {
     console.log(` Creating StackOne`);
 
     const bucket = new s3.Bucket(this, 'ProjectBucket', {
-      bucketName: `${props.projectName}-${this.account}-${this.region}`,
+      bucketName: `${props.projectName}-${this.region}`,
     });
 
     new cdk.CfnOutput(this, 'ProjectBucketName', {

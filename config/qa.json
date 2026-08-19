@@ -1,4 +1,6 @@
 {
+  "project": "miniproject-cdk-qa",
+  "region": "us-west-1",
   "api": {
     "timeout": 90
   }

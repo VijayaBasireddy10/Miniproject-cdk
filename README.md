@@ -1,4 +1,4 @@
-# Mini Project CDK - RF Studio Design Service Structure
+# Mini Project CDK
 
 A small hands-on exercise to demonstrate understanding of AWS CDK concepts by building a simplified version of the RF Studio Design Service infrastructure.
 
@@ -12,7 +12,7 @@ This project is a TypeScript AWS CDK application that implements the core archit
 - **CDK stack-based infrastructure**: Implements multiple stacks with dependency relationships, similar to how the real project structures its infrastructure
 - **GitHub Actions CI/CD**: Automated workflows for build, test, and deployment with stage-specific triggers
 - **TypeScript-first approach**: Uses TypeScript for type-safe infrastructure definition
-- **Configuration management**: Leverages the STAGE environment variable for multi-environment deployments
+- **Configuration management**: Uses the STAGE environment variable to support deployments across different environments.
 
 ### What's Missing Compared to the Real Project
 
@@ -21,7 +21,6 @@ This project is a TypeScript AWS CDK application that implements the core archit
 - **API Gateway**: No actual REST API endpoints or integration with backend services
 - **Authentication (Cognito)**: No user login or identity management system
 - **Authorization (Authorizer Lambda)**: No permission checking for API requests
-- **Postman collections**: No API documentation or testing collections
 - **DynamoDB/RDS databases**: Database schema and infrastructure for data persistence
 - **S3 storage**: No file storage for designs or assets
 - **Monitoring & Logging**: Missing CloudWatch, X-Ray, and observability setup
@@ -55,7 +54,7 @@ Our project currently has two stacks with a dependency relationship. If authenti
 - Decide if requests should be allowed or blocked based on token validity
 - Pass authenticated user information to the ProjectLambda function
 
-**Why here**: The Authorizer Lambda depends on Stack 1's Cognito User Pool, making this the correct location in the dependency chain.
+**Why here**: The Authorizer Lambda depends on Stack 1's Cognito User Pool, making this the correct place in the dependency chain.
 
 #### Stack Dependency Flow
 
