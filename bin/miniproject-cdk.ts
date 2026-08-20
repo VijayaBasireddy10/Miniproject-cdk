@@ -35,5 +35,3 @@ const stackTwo = new StackTwo(app, 'StackTwo', {
   projectName,
   apiTimeout,
 });
-
-stackTwo.addDependency(stackOne);
